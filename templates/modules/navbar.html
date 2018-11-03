@@ -1,0 +1,50 @@
+<nav class="navbar navbar-fixed-top navbar-default">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#mainNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span> 
+      </button>
+      <a class="navbar-brand brand" href="/"><i class="fa fa-fw fa-code"></i> {{ configs.SITE_NAME }}</a>
+    </div>
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="#"><i class="fa fa-fw fa-book"></i> Documentation</a></li>
+        <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+            <i class="fa fa-fw fa-info"></i> About <span class="caret"></span>
+          </a>
+          <ul class="dropdown-menu">
+            <li class="dropdown-header">Product</li>
+            <li>
+              <a href="#">
+                <i class="fa fa-fw fa-github"></i> Source Code
+              </a>
+            </li>
+            <li class="divider"></li>
+            <li class="dropdown-header">Team</li>
+            <li>
+              <a href="#">
+                <i class="fa fa-fw fa-users"></i> About our Team
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <form class="navbar-form navbar-left" method="GET" role="search" action="#" id="nav-search-form">
+          <div class="input-group">
+            <input type="search" class="form-control" id="nav-search" name="q" placeholder="Find People, Challenges, Jobs, Groups" autocomplete="off" size=30 value="{{ q }}">
+            <span class="input-group-btn">
+              <button type="submit" class="btn btn-default" id="nav-search-submit">
+                <i class="fa fa-fw fa-search"></i>
+              </button>
+            </span>
+          </div>
+        </form>
+          <li><a href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
