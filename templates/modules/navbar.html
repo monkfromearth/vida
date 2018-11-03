@@ -9,7 +9,8 @@
       <a class="navbar-brand brand" href="/"><i class="fa fa-fw fa-code"></i> {{ configs.SITE_NAME }}</a>
     </div>
     <div class="collapse navbar-collapse" id="mainNavbar">
-      <ul class="nav navbar-nav">
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>
         <li><a href="#"><i class="fa fa-fw fa-book"></i> Documentation</a></li>
         <li class="dropdown">
           <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -31,19 +32,6 @@
             </li>
           </ul>
         </li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <form class="navbar-form navbar-left" method="GET" role="search" action="#" id="nav-search-form">
-          <div class="input-group">
-            <input type="search" class="form-control" id="nav-search" name="q" placeholder="Find People, Challenges, Jobs, Groups" autocomplete="off" size=30 value="{{ q }}">
-            <span class="input-group-btn">
-              <button type="submit" class="btn btn-default" id="nav-search-submit">
-                <i class="fa fa-fw fa-search"></i>
-              </button>
-            </span>
-          </div>
-        </form>
-          <li><a href="#"><i class="fa fa-fw fa-download"></i> Download</a></li>
       </ul>
     </div>
   </div>
