@@ -22,7 +22,6 @@ class Vida:
 	Nepali (nep)
 	Urdu (urd)
 	English (eng)
-
 	"""
 
 	languages = {
@@ -45,6 +44,9 @@ class Vida:
 	}
 
 	codes = languages.keys()
+
+	@staticmethod
+	def is_ascii(s): return all(ord(c) < 128 for c in s)
 
 	def __init__(self, text, source, target):
 		self.text = text
@@ -73,17 +75,20 @@ class Vida:
 						word = word.decode('utf-8')
 						output.insert(index, self.engine.transform(word).encode('utf-8'))
 					else:
+						if not Vida.is_ascii(word): word = word.decode('utf-8')
 						if not self.usdictionary.check(word) and not self.gbdictionary.check(word):
 							output.insert(index, self.engine.transform(word).encode('utf-8'))
 						else: 
 							output.insert(index, word)
 				status = True
 				message = "Succesfully transliterated the code."
-				output = ' '.join(output)
 			except UnicodeDecodeError, e:
+				Repo.exception(e)
 				message = "Couldn't decode the language properly."
 			except IndexError, e:
+				Repo.exception(e)
 				message = "Couldn't properly frame the sentence."
+			output = ' '.join(output)
 		output = output.decode('utf-8')
 		content['output'] = output
 		return Repo.api('libraries:vida#run', status, message, content)
