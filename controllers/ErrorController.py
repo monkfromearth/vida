@@ -7,5 +7,4 @@ from universe import *
 
 def show(code, message):
 	format = request.args.get('format') or request.form.get('format')
-	print format 
 	return render("error", code=code, message=message), code
