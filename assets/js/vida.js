@@ -1,6 +1,7 @@
 function Vida(source, target){
 	window.vidaClient = this;
 	window.sentence = [];
+	this.host = "https://vidacorp.ml";
 	this.routes = {
 	    'api:authorize':'/api/authorize',
 	    'api:help#languages':'/api/help/languages',
@@ -8,7 +9,7 @@ function Vida(source, target){
 	};
 	this.setup = function(){
 		NProgress.start();
-		$.post(window.vidaClient.routes['api:authorize'], {}, function(ajax){
+		$.post(window.vidaClient.host + window.vidaClient.routes['api:authorize'], {}, function(ajax){
 			if (ajax.status)
 				window.csrf_token = ajax.content.csrf_token;
 			else {
@@ -68,7 +69,8 @@ function Vida(source, target){
 		word = word.split(" ");
 		replacement = replacement.split(" ");
 		for (var i = 0; i < word.length; i++){
-			if ($.inArray($('#chatarea')[0].tagName, window.vidaClient.options.valueBasedInputs) != -1){
+			replacement[i] = replacement[i].replace(/[?=]/g, "");
+			if ($.inArray($(id)[0].tagName, window.vidaClient.options.valueBasedInputs) != -1){
 				text = $(id).val().replace(new RegExp(word[i], 'gi'), replacement[i]);
 				$(id).val(text);
 			} else {
@@ -94,29 +96,19 @@ function Vida(source, target){
 		   sel.collapse(content.firstChild, pos);
 		}
 	};
-	this.compareSentence = function(a1, a2) {
-	    var a = [], diff = [];
-	    for (var i = 0; i < a1.length; i++) a[a1[i]] = true;
-	    for (var i = 0; i < a2.length; i++) {
-	        if (a[a2[i]]) delete a[a2[i]];
-	        else a[a2[i]] = true;
-		}
-		for (var k in a) diff.push(k);
-		return diff;
-	};
 	this.startEngine = function(id){
 		this.setup();
 		$(id).keypress(function(e){
 			if (e.keyCode == 32){
 				var text, word;
-				if ($.inArray($('#chatarea')[0].tagName, window.vidaClient.options.valueBasedInputs) != -1)
+				if ($.inArray($(id)[0].tagName, window.vidaClient.options.valueBasedInputs) != -1)
 					text = $(id).val().split(" ");
 				else
 					text = $(id).text().split(" ");
 				word = $(text).not(window.sentence).get();
 				word = word.join(" ").trim();
 				if (word.length == 0) return false;
-				$.post(window.vidaClient.routes['api:engine#transliterate'], {
+				$.post(window.vidaClient.host + window.vidaClient.routes['api:engine#transliterate'], {
 					csrf_token:window.csrf_token,
 					source:window.vidaClient.source, 
 					target:window.vidaClient.target,
