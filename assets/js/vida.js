@@ -1,6 +1,6 @@
 function Vida(source, target){
 	window.vidaClient = this;
-	window.words = "";
+	window.sentence = [];
 	this.routes = {
 	    'api:authorize':'/api/authorize',
 	    'api:help#languages':'/api/help/languages',
@@ -59,22 +59,46 @@ function Vida(source, target){
 			this.target = value;
 	};
 	this.setTransliteratedText = function(id, word, replacement){
-		$(id).val($(id).val().replace(new RegExp(word, 'gi'), replacement));
+		console.log(word);
+		console.log(replacement);
+		var cursorPosition = $(id).prop("selectionStart");
+		word = word.split(" ");
+		replacement = replacement.split(" ");
+		for (var i = 0; i < word.length; i++){
+			var text = $(id).val().replace(new RegExp(word[i], 'gi'), replacement[i]);
+			$(id).val(text);
+		}
+		text = text.split(" ");
+		window.sentence = text;
+		$(id).prop('selectionEnd', cursorPosition + 1);
+	};
+	this.compareSentence = function(a1, a2) {
+	    var a = [], diff = [];
+	    for (var i = 0; i < a1.length; i++) a[a1[i]] = true;
+	    for (var i = 0; i < a2.length; i++) {
+	        if (a[a2[i]]) delete a[a2[i]];
+	        else a[a2[i]] = true;
+		}
+		for (var k in a) diff.push(k);
+		return diff;
 	};
 	this.startEngine = function(id){
 		this.setup();
 		$(id).keypress(function(e){
 			if (e.keyCode == 32){
 				var text = $(id).val().split(" ");
-				var word = text[text.length -1];
+				var word = $(text).not(window.sentence).get();
+				word = word.join(" ").trim();
+				if (word.length == 0) return false;
 				$.post(window.vidaClient.routes['api:engine#transliterate'], {
 					csrf_token:window.csrf_token,
-					source:this.source,
-					target:this.target,
+					source:window.vidaClient.source, 
+					target:window.vidaClient.target,
 					text:word
 				}, function(ajax){
 					if (ajax.status) 
 						window.vidaClient.setTransliteratedText(id, word, ajax.content.output);
+					console.log(ajax);
 				}).fail(function(e, s, t){
 					console.log(e, s, t)
 				});
