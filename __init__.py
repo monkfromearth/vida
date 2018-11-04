@@ -33,6 +33,8 @@ route = site.add_url_rule # different name for definition
 
 route('/', 'welcome', HomeController.welcome, methods=['GET', 'POST'])
 
+route('/demo', 'demo', HomeController.demo, methods=['GET', 'POST'])
+
 # Api Routes
 
 route('/api/authorize', 'api:authorize', APIController.authorize, methods=['GET', 'POST'])

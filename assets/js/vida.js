@@ -8,7 +8,6 @@ function Vida(source, target){
 	    'api:engine#transliterate':'/api/engine/transliterate'
 	};
 	this.setup = function(){
-		NProgress.start();
 		$.post(window.vidaClient.host + window.vidaClient.routes['api:authorize'], {}, function(ajax){
 			if (ajax.status)
 				window.csrf_token = ajax.content.csrf_token;
@@ -16,7 +15,6 @@ function Vida(source, target){
 				console.error("Couldn't authenticate the SDK.");
 				return false;
 			}
-			NProgress.done();
 		}).fail(function(e, s, t){
 			NProgress.done();
 			console.error(e, s, t);

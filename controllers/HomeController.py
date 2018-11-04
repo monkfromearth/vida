@@ -4,5 +4,6 @@
 
 from universe import *
 
-def welcome():
-	return render('welcome')
+def welcome(): return render('welcome')
+
+def demo(): return render('demo')
