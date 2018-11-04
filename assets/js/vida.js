@@ -1,5 +1,6 @@
 function Vida(source, target){
 	window.vidaClient = this;
+	window.words = "";
 	this.routes = {
 	    'api:authorize':'/api/authorize',
 	    'api:help#languages':'/api/help/languages',
@@ -57,30 +58,25 @@ function Vida(source, target){
 		if (name == 'target')
 			this.target = value;
 	};
-	this.setTransliteratedText = function(id, currentProcessId, text){
-		if ($(id).attr('vida-ghost-cp-id') == currentProcessId)
-			$(id).val(text + " ");
+	this.setTransliteratedText = function(id, word, replacement){
+		$(id).val($(id).val().replace(new RegExp(word, 'gi'), replacement));
 	};
 	this.startEngine = function(id){
 		this.setup();
 		$(id).keypress(function(e){
 			if (e.keyCode == 32){
-				var text = $(id).val();
-				var currentProcessId = Math.random().toString(36).substring(7);
-				$(id).attr('vida-ghost-cp-id', currentProcessId);
+				var text = $(id).val().split(" ");
+				var word = text[text.length -1];
 				$.post(window.vidaClient.routes['api:engine#transliterate'], {
 					csrf_token:window.csrf_token,
 					source:this.source,
 					target:this.target,
-					text:text
+					text:word
 				}, function(ajax){
-					console.log(ajax);
-					if (ajax.status)
-						window.vidaClient.setTransliteratedText(id, currentProcessId, ajax.content.output);
+					if (ajax.status) 
+						window.vidaClient.setTransliteratedText(id, word, ajax.content.output);
 				}).fail(function(e, s, t){
-					console.error(e);
-					console.error(s);
-					console.error(t);
+					console.log(e, s, t)
 				});
 			};
 		});
