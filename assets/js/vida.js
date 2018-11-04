@@ -18,9 +18,7 @@ function Vida(source, target){
 			NProgress.done();
 		}).fail(function(e, s, t){
 			NProgress.done();
-			console.error(e);
-			console.error(s);
-			console.error(t);
+			console.error(e, s, t);
 		});
 		if ($.inArray(this.source, Object.keys(this.codes)) == -1){
 			console.error("Please specify the correct code for the source langauge;");
@@ -58,19 +56,43 @@ function Vida(source, target){
 		if (name == 'target')
 			this.target = value;
 	};
+	this.options = {
+		valueBasedInputs:[
+			'TEXTAREA',
+			'INPUT',
+			'SELECT'
+		]
+	};
 	this.setTransliteratedText = function(id, word, replacement){
-		console.log(word);
-		console.log(replacement);
-		var cursorPosition = $(id).prop("selectionStart");
+		var text;
 		word = word.split(" ");
 		replacement = replacement.split(" ");
 		for (var i = 0; i < word.length; i++){
-			var text = $(id).val().replace(new RegExp(word[i], 'gi'), replacement[i]);
-			$(id).val(text);
+			if ($.inArray($('#chatarea')[0].tagName, window.vidaClient.options.valueBasedInputs) != -1){
+				text = $(id).val().replace(new RegExp(word[i], 'gi'), replacement[i]);
+				$(id).val(text);
+			} else {
+				text = $(id).text().replace(new RegExp(word[i], 'gi'), replacement[i]);
+				$(id).text(text);
+				window.vidaClient.setCaretPosition(id, text.length);
+			}
 		}
 		text = text.split(" ");
 		window.sentence = text;
-		$(id).prop('selectionEnd', cursorPosition + 1);
+	};
+	this.setCaretPosition = function(id, pos){
+		var content  = document.getElementById(id.slice(1));
+		content.focus();
+	    var sel; // character at which to place caret
+		if (document.selection) {
+		  sel = document.selection.createRange();
+		  sel.moveStart('character', pos);
+		  sel.select();
+		}
+		else {
+		   sel = window.getSelection();
+		   sel.collapse(content.firstChild, pos);
+		}
 	};
 	this.compareSentence = function(a1, a2) {
 	    var a = [], diff = [];
@@ -86,8 +108,12 @@ function Vida(source, target){
 		this.setup();
 		$(id).keypress(function(e){
 			if (e.keyCode == 32){
-				var text = $(id).val().split(" ");
-				var word = $(text).not(window.sentence).get();
+				var text, word;
+				if ($.inArray($('#chatarea')[0].tagName, window.vidaClient.options.valueBasedInputs) != -1)
+					text = $(id).val().split(" ");
+				else
+					text = $(id).text().split(" ");
+				word = $(text).not(window.sentence).get();
 				word = word.join(" ").trim();
 				if (word.length == 0) return false;
 				$.post(window.vidaClient.routes['api:engine#transliterate'], {
@@ -98,7 +124,6 @@ function Vida(source, target){
 				}, function(ajax){
 					if (ajax.status) 
 						window.vidaClient.setTransliteratedText(id, word, ajax.content.output);
-					console.log(ajax);
 				}).fail(function(e, s, t){
 					console.log(e, s, t)
 				});
