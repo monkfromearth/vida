@@ -26,16 +26,6 @@ def after_request(response):
   response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
   return response
 
-# CSRF Protection
-
-@site.before_request
-def csrf_protection():
-	exceptions = [
-		'/api/authorize'
-	]
-	if request.method == 'POST' and request.path not in exceptions:
-		token = session.get('csrf_token')
-		if not token or token != request.form.get('csrf_token'): abort(403)
 
 route = site.add_url_rule # different name for definition
 
